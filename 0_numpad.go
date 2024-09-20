@@ -19,7 +19,7 @@ func main() {
 
     // switch to using http.NewRequest
     URL := "https://challenges.aquaq.co.uk/challenge/0/input.txt"
-    session_value := os.Getenv("COOKIE_SESSION_VALUE")
+    session_value := os.Getenv("COOK")
     if session_value == "" {
         panic("session/empty")
     }
