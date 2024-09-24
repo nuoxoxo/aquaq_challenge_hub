@@ -14,7 +14,6 @@ func main() {
 
     URL := "https://challenges.aquaq.co.uk/challenge/9/input.txt"
     body := strings.TrimSpace(string(getbody(URL)))
-    fmt.Println("body/", body)
 
     res := big.NewInt(1)
     for _, word := range strings.Split(body, "\n") {
