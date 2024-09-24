@@ -21,8 +21,8 @@ func main() {
         nums = append(nums, n)
         roms = append(roms, romanize(n))
     }
-    fmt.Println("nums/", nums, "\nlen/", len(nums))
-    fmt.Println("roms/", roms, "\nlen/", len(roms))
+    //fmt.Println("nums/", nums, "\nlen/", len(nums))
+    //fmt.Println("roms/", roms, "\nlen/", len(roms))
 
     // caesar
     res := 0
