@@ -15,7 +15,7 @@ func main() {
 
     URL := "https://challenges.aquaq.co.uk/challenge/7/input.txt"
     lines := strings.Split(strings.TrimSpace(string(getbody(URL))), "\n")[1:]
-    fmt.Println("lines/", lines)
+    //fmt.Println("lines/", lines) // DBG
 
     var ELO_DEFAULT float64 = 1200.0
     vs := make( map[string]map[string]bool ) // a dict of dicts
@@ -54,7 +54,7 @@ func main() {
         A = append(A, int(v))
     }
     sort.Ints(A)
-    fmt.Println("sort/", A)
+    //fmt.Println("sort/", A) // DBG
     fmt.Println("diff/", A[len(A) - 1] - A[0])
 }
 
