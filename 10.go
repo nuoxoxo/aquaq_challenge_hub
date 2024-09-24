@@ -1,3 +1,5 @@
+// run: `go run 10.go 10_helper.go`
+
 package main
 
 import (
@@ -22,6 +24,7 @@ func main() {
         trio := strings.Split(line, ",")
         src, des := trio[0], trio[1]
         cost, _ := strconv.Atoi(trio[2])
+
         // add node/vertex - both vertices "A" "B"
         if ok := adj.Vertices[src]; ok == nil {
             node := & Vertex {
@@ -41,31 +44,10 @@ func main() {
         adj.Vertices[src].Costs[adj.Vertices[des]] = cost
     }
     adj.Printer()
-    
-}
 
-// priority Q
-
-
-
-// graph - adj list
-
-type Vertex struct {
-    Key     string
-    Costs   map[*Vertex]int // destination, cost
-}
-
-type Graph struct {
-    Vertices map[string]*Vertex
-}
-
-func (G * Graph) Printer() {
-    for _, v := range G.Vertices {
-        fmt.Println("\nfrom/", YELL(v.Key))
-        for nei, cost := range v.Costs {
-            fmt.Println("  to/", CYAN(nei.Key), cost)
-        }
-    }
+    // djikstra def. in helper
+    res := adj.Dijkstra( "TUPAC", "DIDDY" )
+    fmt.Println("res/", res)
 }
 
 func getbody(URL string) []uint8 {
