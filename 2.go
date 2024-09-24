@@ -36,12 +36,11 @@ func main() {
         } else {
             L = R
         }
-        fmt.Println("res/", res)
+        //fmt.Println("tmp/", res)
     }
-    fmt.Println("res/", res)
     sum := 0
     for _, n := range res { sum += n }
-    fmt.Println("sum/", sum)
+    fmt.Println("sum/" + Cyan, sum, Rest + "res/", res)
 }
 
 // DRAFT
