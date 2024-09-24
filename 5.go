@@ -80,8 +80,8 @@ func main() {
 
     URL := "https://challenges.aquaq.co.uk/challenge/5/input.txt"
     ops := strings.TrimSpace(string(getbody(URL)))
+
     //ops = "LRDLU" // TEST
-    fmt.Println("body/", ops)//body)
 
     da := New_Die(map[string]int{ "up": 3, "front": 1, "left": 2,
         "down": 7 - 3, "back": 7 - 1, "right": 7 - 2,
@@ -98,18 +98,18 @@ func main() {
     for i, op := range ops {
         da.Roll(string(op))
         db.Roll(string(op))
-        da.Show(&i)
-        db.Show(&i)
+        //da.Show(&i)
+        //db.Show(&i)
         if da.Faces()["front"] == db.Faces()["front"] {
             matches = append(matches, i)
             res += i
         }
     }
 
+    // fmt.Println("matches/", matches) // DBG
+    fmt.Println("res/" + Yell, res, Rest)
     da.Show(nil)
     db.Show(nil)
-    fmt.Println("matches/", matches)
-    fmt.Println("res/", res)
 }
 
 func getbody(URL string) []uint8 {
