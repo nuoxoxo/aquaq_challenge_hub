@@ -17,7 +17,7 @@ func main() {
     // TEST
     //lines = []string{"lx,ly,ux,uy", "0,0,3,3", "2,2,4,5", "6,3,8,7",}
 
-    fmt.Println("lines/", lines[:4], len(lines))
+    //fmt.Println("lines/", lines[:4], len(lines))
     coors := make([][4]int, len(lines))
     cells := make(map[[2]int]int)
     seen := make(map[[2]int]bool)
