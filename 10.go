@@ -43,11 +43,11 @@ func main() {
         // add edge/cost
         adj.Vertices[src].Costs[adj.Vertices[des]] = cost
     }
-    adj.Printer()
+    //adj.Printer()
 
     // djikstra def. in helper
     res := adj.Dijkstra( "TUPAC", "DIDDY" )
-    fmt.Println("res/", res)
+    fmt.Println("res/" + Cyan, res, Rest)
 }
 
 func getbody(URL string) []uint8 {
