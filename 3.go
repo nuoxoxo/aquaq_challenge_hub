@@ -30,7 +30,7 @@ func main() {
         if char == "R" && c + 1 <= 5 && string(Map[r][c + 1]) == "#" {c += 1}
         res += r + c
     }
-    fmt.Println("res/", res)
+    fmt.Println("res/" + Yell, res, Rest)
 }
 
 func init() {
