@@ -13,12 +13,11 @@ import (
 func main() {
     URL := "https://challenges.aquaq.co.uk/challenge/1/input.txt"
     body := string( getbody(URL) )
-    fmt.Println("body/", YELL( body ))
+    fmt.Println("body/", YELL(strings.TrimSpace(body)))
 
     // sim
     
-    // TEST
-    // body = "kdb4life"
+    // body = "kdb4life" // TEST
 
     HexChars := "0123456789abcdef"
     cipher := ""
@@ -30,16 +29,18 @@ func main() {
             cipher += char
         }
     }
-    fmt.Println("cipher/", cipher, "\nlen/", len(cipher))
+
     need := 3 - len(cipher) % 3
-    fmt.Println("need/", need)
+    //fmt.Println("cipher/", cipher, "\nlen/", len(cipher), "\nneed/", need)
+
     // padding
     for i := 0; i < need; i++ {
         cipher += "0"
     }
     partlen := len(cipher) / 3
-    fmt.Println("partlen/", partlen)
-    //res := [partlen]uint8{}
+
+    //fmt.Println("partlen/", partlen)
+
     res := make([]uint8, partlen * 2)
     for i := 0; i < 2; i++ {
         res[0 + i] = cipher[partlen * 0 + i]
@@ -48,9 +49,11 @@ func main() {
     }
     // 0 2 4 - i=0
     // 1 3 5 - i=1
-    fmt.Println("len/cipher", len(cipher))
+
     fmt.Println("res/", CYAN(string(res)))
-    fmt.Println("cmp/", "0d40fe", "TEST/")
+
+    //fmt.Println("len/cipher", len(cipher))
+    //fmt.Println("cmp/", "0d40fe", "TEST/")
 }
 
 /*
