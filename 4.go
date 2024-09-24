@@ -12,11 +12,7 @@ import (
 func main() {
 
     URL := "https://challenges.aquaq.co.uk/challenge/4/input.txt"
-    body := strings.TrimSpace(string(getbody(URL)))
-    fmt.Println("body/", body)
-
-    end, _ := strconv.Atoi(body)
-    fmt.Println("end/", end)
+    end, _ := strconv.Atoi(strings.TrimSpace(string(getbody(URL))))
 
     var sum int64 = 0
     for n := end; n > 0; n-- {
@@ -25,7 +21,7 @@ func main() {
             sum += int64(n)
         }
     }
-    fmt.Println("sum/", sum)
+    fmt.Println("sum/" + Cyan, sum, Rest)
 }
 
 func euclid_gcd(l, r int) int {
