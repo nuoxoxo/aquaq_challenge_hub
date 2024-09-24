@@ -50,7 +50,6 @@ func main() {
                 break
             }
         }
-        fmt.Println("\nbef./", M, C)
         for i := range M {
             if i == 4 {
                 M[i] = 0
@@ -58,7 +57,6 @@ func main() {
                 M[i] = M[i + 1]
             }
         }
-        fmt.Println("aft./", M, C)
         M [4] += milk // milk restocked after breakfast
     }
     res := C
