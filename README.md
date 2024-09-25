@@ -10,9 +10,9 @@
  1111111111111111111111
 000000000000000000000000
 ```
-- __Before everything__
+- __Get and export cookie__
 
-`$ export COOK="` _`cookie_value`_ `"`
+`$ export COOK=" ... "`
 
 - __Run solution #10__
 
