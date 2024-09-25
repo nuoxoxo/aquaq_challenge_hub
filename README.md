@@ -11,6 +11,9 @@
 000000000000000000000000
 ```
 - __Before everything__
+
 `$ export COOK="` _`cookie_value`_ `"`
+
 - __Run solution #10__
+
 `$ go run 10.go 10_helper.go`
