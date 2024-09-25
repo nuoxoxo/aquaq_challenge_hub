@@ -11,4 +11,4 @@
 000000000000000000000000
 ```
 
-`$ export COOK="` _`__cookie_value__`_ `"`
+`$ export COOK="` _`cookie_value`_ `"`
