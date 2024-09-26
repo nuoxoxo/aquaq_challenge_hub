@@ -1,4 +1,4 @@
-*.0
-*.1
-*.sh
-*.py
+*
+!.gitigore
+!readme.md
+!*.go
