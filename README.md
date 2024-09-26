@@ -14,10 +14,6 @@
 
 `$ export COOK=" ... "`
 
-- __Run solution #10__
-
-`$ go run 10.go 10_helper.go`
-
 - __Notes__
     - 15/ classic Bidirectional BFS
     - 13/ most repeated substring/pattern
@@ -27,3 +23,6 @@
     - 7/ implement ELO
     - 5/ OOP of rolling dice
 
+- __Run solution #10__
+
+`$ go run 10.go 10_helper.go`
