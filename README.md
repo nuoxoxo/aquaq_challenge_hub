@@ -15,6 +15,8 @@
 `$ export COOK=" ... "`
 
 - __Notes__
+    - 18/ hour arithmetic - add 1 or -1 second
+    - 17/ date arithmetic - `currdate.Sub(prevdate)` 
     - 15/ classic Bidirectional BFS
     - 13/ most repeated substring/pattern
     - 10/ Dijkstra - min heap / priority queue implementation in Go
