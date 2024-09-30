@@ -3,6 +3,7 @@
 `$ export COOK=" ... "`
 
 ### __Notes__
+- 33/ --- _quite possibly a knapsack problem_
 - 18/ hour arithmetic - add 1 or -1 second
 - 17/ date arithmetic - `currdate.Sub(prevdate)` 
 - 15/ bidirectional BFS
