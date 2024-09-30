@@ -17,30 +17,34 @@ var D [4][2]int = [4][2]int{{-1, 0}, {0, 1}, {0, -1}, {1, 0}}
 func main() {
     //iter_side_pairs, coor_pairs := [][2]int{{350,6}}, [][][2]int{{{2,2}, {2,3}}}
     // 👆 TEST
-    var gol func([2]int, [][2]int)int
-    gol = func( iter_and_side [2]int, coors [][2]int)int{
-        iter, N /*R, C*/ := iter_and_side[0], iter_and_side[1]
-        if debugging { fmt.Println("gol/", iter, N, coors) }
-        cached := make(map[[2]int]bool)
-        for _, coor := range coors { cached[coor] = true }
-        for it := 0; it < iter; it++ { // loop until 97409
-            temp_cached := make(map[[2]int]bool)
-            liveneis := make(map[[2]int]int)
-            for cell := range cached {
+    var gol func([2]int, [][2]int)int = func(pair[2]int, coors[][2]int)int{
+        iter, N := pair[0], pair[1]
+        if debugging {
+            fmt.Println("gol/", iter, N, coors)
+        }
+        cache := [][2]int{}
+        for _, coor := range coors { cache = append(cache, coor) }
+        for it := 0; it < iter; it++ {
+            to_cache := [][2]int{}
+            nei_of_life := make(map[[2]int]int)
+            for _, cell := range cache {
                 r, c := cell[0], cell[1]
-                for d := 0; d < 4; d++ {
-                    rr, cc := r + D[d][0], c + D[d][1]
+                for i := 0; i < 4; i++ {
+                    rr, cc := r + D[i][0], c + D[i][1]
                     if rr < 0 || rr >= N || cc < 0 || cc >= N { continue }
-                    liveneis[ [2]int{rr, cc} ]++
+                    nei_of_life[ [2]int{rr, cc} ]++
                 }
             }
-            for nei, n := range liveneis {
-                if n % 2 != 0 { temp_cached[nei] = true }
+            for nei, n := range nei_of_life {
+                if n % 2 != 0 { to_cache = append(to_cache, nei) }
             }
-            cached = temp_cached
+            cache = to_cache
         }
-        fmt.Println(CYAN("res/iter"), len(cached), "from", iter, N, coors)
-        return len(cached)
+        fmt.Println(CYAN("res/iter"), len(cache), "from", iter, N, coors)
+        if debugging {
+            fmt.Println("cache/", cache)
+        }
+        return len(cache)
     }
     res := 0
     for i, slc := range iter_side_pairs { res += gol( slc, coor_pairs[i] ) }
@@ -65,9 +69,13 @@ func init() {
         }
         coor_pairs = append(coor_pairs, temp)
         iter_side_pairs = append(iter_side_pairs, [2]int{iter, side})
-        if debugging { fmt.Println(idx, "-", temp) }
+        if debugging {
+            fmt.Println(idx, "-", temp)
+        }
     }
-    if debugging { fmt.Println(len(iter_side_pairs), len(coor_pairs)) }
+    if debugging {
+        fmt.Println(len(iter_side_pairs), len(coor_pairs))
+    }
 }
 
 func getbody(URL string) []uint8 {
