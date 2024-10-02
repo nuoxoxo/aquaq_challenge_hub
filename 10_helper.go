@@ -35,7 +35,7 @@ func (g *Graph) Dijkstra(src, des string) int {
             }
         }
     }
-
+    fmt.Println("des/", dists)
     return dists[des]
 }
 
@@ -66,14 +66,13 @@ func (pq * MinHeap) Push(x interface{}) {
 }
 
 func (pq * MinHeap) Pop() interface{} {
-    prev := *pq
-    N := len(prev)
-    node := prev[N - 1]
-    prev[N - 1] = nil // in case of leak
-    node.Index = -1
-    *pq = prev[0 : N - 1]
-
-    return node
+    cp := *pq
+    size := len(cp)
+    last := cp[size - 1]
+    cp[size - 1] = nil // in case of leak
+    last.Index = -1
+    *pq = cp[:size - 1]
+    return last
 }
 
 // graph - adj list
