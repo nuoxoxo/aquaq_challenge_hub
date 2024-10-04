@@ -1,7 +1,3 @@
-### __Get and export cookie__
-
-`$ export COOK=" ... "`
-
 ### __Notes__
 - 33/ coin chain / knapsack problem
 - 23/ reversed Playfair
@@ -15,6 +11,10 @@
 - 8/ using a len-5 array to countdown expiration
 - 7/ implement ELO
 - 5/ rolling dice OOP
+
+### __Export cookie__
+
+`$ export COOK=" ... "`
 
 ### __Run solution #10__
 
