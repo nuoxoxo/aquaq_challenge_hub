@@ -4,6 +4,7 @@
 
 ### __Notes__
 - 33/ coin chain / knapsack problem
+- 23/ reversed Playfair
 - 21/ DP
 - 18/ hour arithmetic - add 1 or -1 second
 - 17/ date arithmetic - `currdate.Sub(prevdate)` 
