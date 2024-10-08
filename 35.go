@@ -15,29 +15,60 @@ var wordlist []string
 var demo_number int = 0
 
 func main() {
-    fmt.Println(YELL("wordlist/size"), len(wordlist))
-    fmt.Println(YELL("cipher/"), cipher, len(cipher))
+    fmt.Println(CYAN("wordlist/size"), len(wordlist))
+    fmt.Println(CYAN("cipher/"), cipher, len(cipher))
+    s := ""
+    var p float64
+    s = columnar_transposition_demo("WE ARE DISCOVERED FLEE AT ONCE", "GLASS")
+    fmt.Println(YELL("end/"), s)
+    s = columnar_transposition_demo("WE ARE DISCOVERED FLEE AT ONCE", "LEVER")
+    fmt.Println(YELL("end/"), s)
 
-    demo("WE ARE DISCOVERED FLEE AT ONCE", "GLASS")
-    demo("WE ARE DISCOVERED FLEE AT ONCE", "LEVER")
+    // 
+    s, p = reversed(cipher, "GLASS", wordlist)
+    fmt.Println(YELL("end/rev"), s, p)
+    s, p = reversed(cipher, "LEVER", wordlist)
+    fmt.Println(YELL("end/rev"), s, p)
+
+    /*
+    END := 99996
+
+    for i := END; i < END + 1; i++ {
+        //fmt.Println("in/", i, word, precision)
+        t, p := reversed (cipher, wordlist[i], wordlist)
+        if precision < p {
+            precision = p
+            fulltext = t
+        }
+        fmt.Println("i =", i , "word =", wordlist[i])
+        fmt.Printf("\tprecision = %0.2f - p = %0.8f \n", precision, p)
+        //fmt.Println("in/", i, word, precision)
+    }
+    fmt.Println(fulltext, precision, "/res")
+    *//*
+    fulltext, precision = reversed (" DV  NWECEE E ODEOAIEFACRSRLTE", "GLASS", wordlist)
+    fmt.Println(fulltext, precision, "/res")
+    */
 }
-func demo(text, codeword string) {
+
+func reversed(ciphertext, codeword string, wl []string) (string, float64) {
+
     demo_number++
     fmt.Println("\n- Demo", demo_number, "-\n")
-    // the chopped grid
+
+    return "", 0.0
+}
+
+func columnar_transposition_demo(text, codeword string)string{
+    demo_number++
+    fmt.Println("\n- Demo", demo_number, "-\n")
+
+    // from codeword, get a selection order eg. 1 2 0 3 4
     N := len(codeword)
-    chopped := []string{}
-    for i := 0; i < len(text) - 1; i += N {
-        end := i + N
-        if end > len(text) { end = len(text) }
-        chopped = append(chopped, text[i : end])
-        fmt.Println(CYAN(chopped[i / N]), "- idx/", i)
-    }
-    // get a selection order like 1 2 0 3 4
     order, tosort := make([]int, N), []string{}
     for _, c := range codeword { tosort = append(tosort, string(c)) }
     sort.Strings(tosort)
-    fmt.Println(YELL("sorted/"), tosort)
+    fmt.Println(CYAN("sorted/"), tosort)
     for pos, r := range codeword {
         for idx, l := range tosort {
             if l == string(r) {
@@ -47,9 +78,18 @@ func demo(text, codeword string) {
             }
         }
     }
-    fmt.Println(YELL("order/ "), order)
+    fmt.Println(CYAN("order/ "), order)
 
-    res := ""
+    // from original text, get the chopped grid
+    chopped := []string{}
+    for i := 0; i < len(text) - 1; i += N {
+        end := i + N
+        if end > len(text) { end = len(text) }
+        chopped = append(chopped, text[i : end])
+        fmt.Println(YELL(chopped[i / N]), "- idx/", i)
+    }
+
+    // from chopped grid & order get a new chopped grid + its string
     chopped2 := make([]string, len(order))
     for idx, col := range order {
         colword := ""
@@ -57,13 +97,18 @@ func demo(text, codeword string) {
             colword += string(chopped[row][idx])
         }
         chopped2[col] = colword
-        fmt.Println(CYAN("chopped/new"), colword, "-", col, idx)
+        fmt.Println(YELL("chopped/new"), colword, "-", col, idx)
     }
-    for _, line := range chopped2 {
-        res += line
+    res := strings.Join( chopped2, "" )
+    fmt.Println(CYAN("res/"), res, YELL("-"), codeword)
+
+    // debugger/assert
+    if codeword == "GLASS" {
+        cmp := " DV  NWECEE E ODEOAIEFACRSRLTE"
+        fmt.Println(CYAN("cmp/"), cmp)
+        assert (res == cmp)
     }
-    fmt.Println(YELL("res/"), res)
-    fmt.Println(CYAN("cmp/"), " DV  NWECEE E ODEOAIEFACRSRLTE", CYAN("-"), codeword)
+    return res
 }
 
 func init() {
@@ -71,8 +116,8 @@ func init() {
     URL := "https://challenges.aquaq.co.uk/challenge/35/input.txt"
     body := string(getbody(URL))
     // DBG
-    //fmt.Println(CYAN("-1/"), string(body[len(body) - 1]))
-    //fmt.Println(CYAN("-2/"), string(body[len(body) - 2]))
+    //fmt.Println(YELL("-1/"), string(body[len(body) - 1]))
+    //fmt.Println(YELL("-2/"), string(body[len(body) - 2]))
     cipher = body[ :len(body) - 2 ]
     // wordlist
     URL = "https://challenges.aquaq.co.uk/challenge/35"
@@ -102,7 +147,7 @@ func getbody(URL string) []uint8 {
 
 func assert(expression bool) {
     if ! expression {
-        fmt.Print(CYAN("assert/false "))
+        fmt.Print(YELL("assert/false "))
         panic(expression)
     }
 }

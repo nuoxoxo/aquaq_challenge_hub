@@ -2,3 +2,4 @@
 !.gitigore
 !readme.md
 !*.go
+*copy*
