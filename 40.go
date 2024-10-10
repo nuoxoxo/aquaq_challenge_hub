@@ -7,14 +7,31 @@ import (
     "net/http"
     "strings"
     "strconv"
+    "slices"
 )
 
-const testing bool = false
+const testing bool = true
+const CHR string = "%"
+
+func drawMountains(nums []int) {
+    W, H := len(nums), slices.Max(nums)
+    fmt.Println("mtn/", W, H)
+    res := make([]string, H + 1)
+    for r := 0; r < H + 1; r++ { res[r] = strings.Repeat(" ", W) }
+    for r := 0; r < H + 1; r++ {
+        for c := 0; c < W; c++ {
+            if r > H - nums[c] { res[r] = res[r][:c] + CHR + res[r][c + 1:] }
+        }
+    }
+    for _, line := range res {
+        fmt.Println(line)
+    }
+}
 
 func main() {
     URL := "https://challenges.aquaq.co.uk/challenge/40/input.txt"
     line := string(getbody(URL))
-    if testing {line = "0 1 2 4 6 8 9 8 6 4 2 3 5 6 5 4 5 7 8 6 4 2 1 0"}
+    if testing { line = "0 1 2 4 6 8 9 8 6 4 2 3 5 6 5 4 5 7 8 6 4 2 1 0" } // TEST
     lines := strings.Split(strings.TrimSpace(line), " ")
     nums := []int{}
     for _, n := range lines {
@@ -60,6 +77,8 @@ func main() {
     res := 0
     for _, n := range proms {res += n}
     fmt.Println("res/", res)
+
+    if testing { drawMountains(nums) }
 }
 
 func getbody(URL string) []uint8 {
