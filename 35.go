@@ -8,72 +8,200 @@ import (
     "regexp"
     "strings"
     "sort"
+    "sync"
 )
 
+var wg sync.WaitGroup
+var mutex sync.Mutex
 var cipher string
 var wordlist []string
 var demo_number int = 0
 
 func main() {
+
+    //wg.Wait()
+
     fmt.Println(CYAN("wordlist/size"), len(wordlist))
     fmt.Println(CYAN("cipher/"), cipher, len(cipher))
-    s := ""
-    var p float64
-    s = columnar_transposition_demo("WE ARE DISCOVERED FLEE AT ONCE", "GLASS")
-    fmt.Println(YELL("end/"), s)
-    s = columnar_transposition_demo("WE ARE DISCOVERED FLEE AT ONCE", "LEVER")
-    fmt.Println(YELL("end/"), s)
 
-    // 
-    s, p = reversed(cipher, "GLASS", wordlist)
-    fmt.Println(YELL("end/rev"), s, p)
-    s, p = reversed(cipher, "LEVER", wordlist)
-    fmt.Println(YELL("end/rev"), s, p)
+    src := "WE ARE DISCOVERED FLEE AT ONCE"
 
-    /*
-    END := 99996
+    // demo
+    cipher_from_GLASS := demo(src, "GLASS")
+    fmt.Println(YELL("\ndemo/ends"), cipher_from_GLASS)
 
-    for i := END; i < END + 1; i++ {
-        //fmt.Println("in/", i, word, precision)
-        t, p := reversed (cipher, wordlist[i], wordlist)
-        if precision < p {
-            precision = p
-            fulltext = t
+    cipher_from_LEVER := demo(src, "LEVER")
+    fmt.Println(YELL("\ndemo/ends"), cipher_from_LEVER)
+
+    // reversed_demo func test
+    arr, res := reversed_demo(cipher_from_GLASS, "GLASS")
+    fmt.Println(YELL("\nsoln/ends"), CYAN(res), arr)
+    assert (res == src)
+
+    arr, res = reversed_demo(cipher_from_LEVER, "LEVER")//, wordlist)
+    assert (res == src)
+
+    // soln
+    end := 99996
+    codeword := wordlist[ end ]
+    arr, res = reversed_demo(cipher, codeword)
+    fmt.Println(YELL("\nsoln/ends"), CYAN(res), arr)
+
+    // real soln
+    record_word := ""
+    record_accu := -1.0
+    record_indi := -1
+    for idx, codeword := range wordlist {
+        arr, res = reversed_real (cipher, codeword)
+        // check pertinence of decoded text against the give wordlist
+        N := float64(len(arr))
+        count_correct := 0
+        for _, word := range arr {
+            l, r := 0, len(wordlist) - 1
+            for l <= r {
+                mid := (l + r) / 2
+                tar := wordlist[mid]
+                // Compare function
+                //  > 0 we are smaller ie. we need to go lower
+                //  == 0 matches
+                //  < 0 we are bigger ie. go higher/right
+                cmp := strings.Compare(tar, word)
+                if cmp == 0 {
+                    count_correct++
+                    break
+                } else if cmp < 0 {
+                    l = mid + 1
+                } else {
+                    r = mid - 1
+                }
+            }
         }
-        fmt.Println("i =", i , "word =", wordlist[i])
-        fmt.Printf("\tprecision = %0.2f - p = %0.8f \n", precision, p)
-        //fmt.Println("in/", i, word, precision)
+        accuracy := float64(count_correct) / N
+        if record_accu < accuracy {
+            record_word = codeword
+            record_accu = accuracy
+            record_indi = idx
+        }
+        // printer/DBG
+        //fmt.Printf("%d - %.2f - %s \n", idx, accuracy, codeword)
     }
-    fmt.Println(fulltext, precision, "/res")
-    *//*
-    fulltext, precision = reversed (" DV  NWECEE E ODEOAIEFACRSRLTE", "GLASS", wordlist)
-    fmt.Println(fulltext, precision, "/res")
-    */
+    //fmt.Println("found/", record_word, "- rate/", record_accu * 100)
+    fmt.Printf("found/ %.2f - codeword/ %s - @ index/ %d \n",
+        record_accu * 100, YELL(record_word), record_indi)
 }
 
-func reversed(ciphertext, codeword string, wl []string) (string, float64) {
-
+func reversed_real(ciphertext, codeword string/*, wl []string*/) ([]string, string) {
     demo_number++
-    fmt.Println("\n- Demo", demo_number, "-\n")
-
-    return "", 0.0
+    mutex.Lock()
+    mutex.Unlock()
+    // ------ redo ------------------------------------------
+    N := len(codeword)
+    order, sorted := make([]int, N), []string{}
+    for _, c := range codeword { sorted = append(sorted, string(c)) }
+    sort.Strings(sorted)
+    for pos, r := range codeword {
+        for idx, l := range sorted {
+            if l == string(r) {
+                order[pos] = idx
+                sorted[idx] = " " // emptying the sorted char list
+                break
+            }
+        }
+    }
+    cols := len(ciphertext) / len(order)
+    temp := ""
+    reslist, res := []string{}, ""
+    for c := 0; c < cols; c++ {
+        for _, pos := range order {
+            char := ciphertext[pos * cols + c] // algo
+            if ('a' <= char && char <= 'z') || ('A' <= char && char <= 'Z') {
+                temp += string (char)
+            } else if len(temp) > 0 {
+                reslist = append (reslist, strings.ToLower(temp))
+                res += temp + string(char)
+                if string(char) != " " { res += " " }
+                temp = ""
+            }
+        }
+    }
+    if len(temp) > 0 { // last word grapped
+        reslist = append (reslist, strings.ToLower(temp))
+        res += temp + " "
+        temp = "" //obsolete
+    }
+    return reslist, res[:len(res) - 1]
 }
 
-func columnar_transposition_demo(text, codeword string)string{
+func reversed_demo(ciphertext, codeword string/*, wl []string*/) ([]string, string) {
+    demo_number++
+    mutex.Lock()
+    fmt.Println("\n- Demo", demo_number, "-")
+    fmt.Print("\n- Code : ", YELL(codeword), " -\n\n")
+    mutex.Unlock()
+    // ------ redo ------------------------------------------
+    N := len(codeword)
+    order, sorted := make([]int, N), []string{}
+    for _, c := range codeword { sorted = append(sorted, string(c)) }
+    sort.Strings(sorted)
+    fmt.Println(CYAN("sorted/"), sorted)
+    //for _, char := range sorted {fmt.Print(char, " ")}
+    //fmt.Println()
+    for pos, r := range codeword {
+        for idx, l := range sorted {
+            if l == string(r) {
+                order[pos] = idx
+                sorted[idx] = " " // emptying the sorted char list
+                break
+            }
+        }
+    }
+    fmt.Println(CYAN("order/ "), order)
+    fmt.Println(CYAN("sorted/emptied "), sorted)
+
+    cols := len(ciphertext) / len(order)
+    temp := ""
+    reslist, res := []string{}, ""
+    for c := 0; c < cols; c++ {
+        for _, pos := range order {
+            char := ciphertext[pos * cols + c] // algo
+            if ('a' <= char && char <= 'z') || ('A' <= char && char <= 'Z') {
+                temp += string (char)
+            } else if len(temp) > 0 {
+                reslist = append (reslist, strings.ToLower(temp))
+                res += temp + string(char)
+                if string(char) != " " { res += " " }
+                temp = ""
+            }
+        }
+    }
+    if len(temp) > 0 { // last word grapped
+        reslist = append (reslist, strings.ToLower(temp))
+        res += temp + " "
+        temp = "" //obsolete
+    }
+    return reslist, res[:len(res) - 1]
+}
+
+func index(arr[]int, val int)int{
+    for i, v := range arr { if v == val { return i } }
+    return -1
+}
+
+func demo(text, codeword string)string{
     demo_number++
     fmt.Println("\n- Demo", demo_number, "-\n")
 
     // from codeword, get a selection order eg. 1 2 0 3 4
     N := len(codeword)
-    order, tosort := make([]int, N), []string{}
-    for _, c := range codeword { tosort = append(tosort, string(c)) }
-    sort.Strings(tosort)
-    fmt.Println(CYAN("sorted/"), tosort)
+    order, sorted := make([]int, N), []string{}
+    for _, c := range codeword { sorted = append(sorted, string(c)) }
+    sort.Strings(sorted)
+    fmt.Println(CYAN("sorted/"), sorted)
     for pos, r := range codeword {
-        for idx, l := range tosort {
+        for idx, l := range sorted {
             if l == string(r) {
                 order[pos] = idx
-                tosort[idx] = " "
+                sorted[idx] = " " // emptying the sorted char list
                 break
             }
         }
@@ -108,23 +236,33 @@ func columnar_transposition_demo(text, codeword string)string{
         fmt.Println(CYAN("cmp/"), cmp)
         assert (res == cmp)
     }
-    return res
+    return res + "\n"
 }
 
 func init() {
+    /*
+    wg.Add(1)
+    go func() {
+        defer wg.Done()
+    */
     // input - ciphertext
     URL := "https://challenges.aquaq.co.uk/challenge/35/input.txt"
     body := string(getbody(URL))
     // DBG
-    //fmt.Println(YELL("-1/"), string(body[len(body) - 1]))
-    //fmt.Println(YELL("-2/"), string(body[len(body) - 2]))
-    cipher = body[ :len(body) - 2 ]
+    //fmt.Println(YELL("-1/dbg"), string(body[len(body) - 1]))
+    //fmt.Println(YELL("-2/dbg"), string(body[len(body) - 2]))
+    cipher = body[ :len(body) - 1 ]
     // wordlist
     URL = "https://challenges.aquaq.co.uk/challenge/35"
     re := regexp.MustCompile(`(?s)ave a <a href="(.*?)">handy list`)
     sub := re.FindAllStringSubmatch(string(getbody(URL)), -1)[0][1]
     URL = "https://challenges.aquaq.co.uk" + sub
-    wordlist = strings.Split(strings.TrimSpace(string(getbody(URL))), "\n")
+    words := string(getbody(URL))
+    words = words[:len(words) - 1]
+    wordlist = strings.Split(strings.TrimSpace(words), string(rune(13)) + "\n")
+
+    //}()
+    // 👆 --- for wg - go func
 }
 
 func getbody(URL string) []uint8 {
