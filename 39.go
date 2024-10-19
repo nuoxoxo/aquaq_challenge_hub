@@ -28,15 +28,15 @@ func soln(A []int) int {
     A_won := 0
     darts_final := 0
     darts_played := 0 // count to 3 and switch player
-    for _, n := range A {
-        pts_pair[ who_plays ] += n
-        if pts_pair[ who_plays ] == 501 {
+    for _, dart := range A {
+        pts_pair[ who_plays ] += dart
+        if pts_pair[ who_plays ] > 500 {
+            darts_final += dart
             if who_plays == 0 { A_won++ }
             pts_pair = [2]int{0, 0}
             who_begins = 1 - who_begins
             who_plays = who_begins
             darts_played = 0
-            darts_final += n
         } else if darts_played == 2 {
             who_plays = 1 - who_plays
             darts_played = 0
